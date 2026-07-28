@@ -1,0 +1,266 @@
+@import "tailwindcss";
+
+/* High Contrast Mode CSS Rules */
+html.high-contrast {
+  color-scheme: dark;
+}
+
+html.high-contrast body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* High Contrast Borders on all containers, cards, headers, footers & modals */
+html.high-contrast .border,
+html.high-contrast [class*="border-"],
+html.high-contrast .bg-surface-container,
+html.high-contrast .bg-surface-container-high,
+html.high-contrast .bg-surface-container-low,
+html.high-contrast .bg-surface-container-highest,
+html.high-contrast .bg-surface-container-lowest,
+html.high-contrast .bg-surface-dim,
+html.high-contrast header,
+html.high-contrast footer,
+html.high-contrast nav,
+html.high-contrast section,
+html.high-contrast article,
+html.high-contrast modal,
+html.high-contrast #settings-modal,
+html.high-contrast #profile-modal,
+html.high-contrast #email-modal {
+  border-color: #ffffff !important;
+  border-width: 1.5px !important;
+  border-style: solid !important;
+}
+
+/* High Contrast Surface Backgrounds */
+html.high-contrast .bg-surface-container,
+html.high-contrast .bg-surface-container-high,
+html.high-contrast .bg-surface-container-low,
+html.high-contrast .bg-surface-container-highest,
+html.high-contrast .bg-surface-container-lowest,
+html.high-contrast .bg-surface-dim,
+html.high-contrast .bg-surface-container-highest\/60,
+html.high-contrast .bg-surface-container\/50 {
+  background-color: #000000 !important;
+  outline: 1.5px solid #ffffff !important;
+  box-shadow: 0 0 0 1px #ffffff !important;
+}
+
+/* High Contrast Typography Legibility */
+html.high-contrast p,
+html.high-contrast span,
+html.high-contrast label,
+html.high-contrast h1,
+html.high-contrast h2,
+html.high-contrast h3,
+html.high-contrast h4,
+html.high-contrast h5,
+html.high-contrast h6,
+html.high-contrast li,
+html.high-contrast div,
+html.high-contrast .text-on-surface-variant,
+html.high-contrast .text-outline,
+html.high-contrast .text-slate-400,
+html.high-contrast .text-gray-400,
+html.high-contrast .text-stone-400,
+html.high-contrast [class*="text-white/"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* High Contrast Accent Colors */
+html.high-contrast .text-primary,
+html.high-contrast .text-primary-container,
+html.high-contrast .text-amber-400,
+html.high-contrast .text-yellow-400 {
+  color: #fbbf24 !important; /* Bright Gold */
+  font-weight: 700 !important;
+}
+
+html.high-contrast .text-secondary,
+html.high-contrast .text-teal-400,
+html.high-contrast .text-cyan-400 {
+  color: #38bdf8 !important; /* Electric Blue */
+  font-weight: 700 !important;
+}
+
+html.high-contrast .text-tertiary,
+html.high-contrast .text-red-400,
+html.high-contrast .text-pink-400 {
+  color: #f87171 !important; /* High Contrast Red */
+  font-weight: 700 !important;
+}
+
+/* Inputs & Textareas */
+html.high-contrast input[type="text"],
+html.high-contrast input[type="email"],
+html.high-contrast input[type="password"],
+html.high-contrast textarea,
+html.high-contrast select {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+  outline: 2px solid #fbbf24 !important;
+}
+
+/* Buttons in High Contrast */
+html.high-contrast button {
+  border: 2px solid #ffffff !important;
+}
+
+html.high-contrast button.bg-primary,
+html.high-contrast .glow-button {
+  background-color: #fbbf24 !important;
+  color: #000000 !important;
+  font-weight: 900 !important;
+  border: 2px solid #ffffff !important;
+}
+
+html.high-contrast button.bg-secondary {
+  background-color: #38bdf8 !important;
+  color: #000000 !important;
+  font-weight: 900 !important;
+  border: 2px solid #ffffff !important;
+}
+
+/* Code Snippet Area in High Contrast */
+html.high-contrast #code-snippet,
+html.high-contrast .theme-code-container,
+html.high-contrast pre {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #fbbf24 !important;
+}
+
+/* Active State Outline Highlights */
+html.high-contrast .active-pulse,
+html.high-contrast .border-primary {
+  border-color: #fbbf24 !important;
+  outline: 2px solid #fbbf24 !important;
+}
+
+/* Code Editor Syntax Themes */
+pre, code, #code-snippet, .theme-code-container {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Monokai Theme */
+html[data-syntax-theme="monokai"] #code-snippet,
+html[data-syntax-theme="monokai"] .theme-code-container,
+html[data-syntax-theme="monokai"] pre {
+  background-color: #272822 !important;
+  color: #f8f8f2 !important;
+  border-color: #49483e !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* GitHub Dark Theme */
+html[data-syntax-theme="github"] #code-snippet,
+html[data-syntax-theme="github"] .theme-code-container,
+html[data-syntax-theme="github"] pre {
+  background-color: #0d1117 !important;
+  color: #c9d1d9 !important;
+  border-color: #30363d !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Dracula Theme */
+html[data-syntax-theme="dracula"] #code-snippet,
+html[data-syntax-theme="dracula"] .theme-code-container,
+html[data-syntax-theme="dracula"] pre {
+  background-color: #282a36 !important;
+  color: #f8f8f2 !important;
+  border-color: #6272a4 !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Print / Save PDF Certificate Styles */
+@media print {
+  @page {
+    size: landscape;
+    margin: 10mm;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  #printable-certificate,
+  #printable-certificate * {
+    visibility: visible !important;
+  }
+
+  #printable-certificate {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 2.5rem !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 4px double #d97706 !important;
+    box-shadow: none !important;
+    border-radius: 1rem !important;
+  }
+}
+
+/* Printable & PDF Export Captured Styles */
+.pdf-export-mode#printable-certificate,
+.pdf-export-mode #printable-certificate {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 4px double #d97706 !important;
+  box-shadow: none !important;
+  border-radius: 1.5rem !important;
+  padding: 2.5rem !important;
+}
+
+.pdf-export-mode#printable-certificate h2,
+.pdf-export-mode#printable-certificate p,
+.pdf-export-mode#printable-certificate span,
+.pdf-export-mode#printable-certificate div,
+.pdf-export-mode #printable-certificate h2,
+.pdf-export-mode #printable-certificate p,
+.pdf-export-mode #printable-certificate span,
+.pdf-export-mode #printable-certificate div {
+  color: #0f172a !important;
+}
+
+.pdf-export-mode#printable-certificate #cert-name-display,
+.pdf-export-mode #printable-certificate #cert-name-display {
+  color: #b45309 !important;
+  border-color: #f59e0b !important;
+}
+
+.pdf-export-mode#printable-certificate .text-primary,
+.pdf-export-mode #printable-certificate .text-primary {
+  color: #d97706 !important;
+}
+
+.pdf-export-mode#printable-certificate .text-secondary,
+.pdf-export-mode #printable-certificate .text-secondary {
+  color: #0d9488 !important;
+}
+
+.pdf-export-mode#printable-certificate .text-on-surface-variant,
+.pdf-export-mode #printable-certificate .text-on-surface-variant {
+  color: #64748b !important;
+}
+
+.pdf-export-mode#printable-certificate .bg-surface-container-lowest,
+.pdf-export-mode#printable-certificate .bg-surface-container,
+.pdf-export-mode #printable-certificate .bg-surface-container-lowest,
+.pdf-export-mode #printable-certificate .bg-surface-container {
+  background-color: #ffffff !important;
+}
+
+.pdf-export-mode#printable-certificate .border-outline-variant,
+.pdf-export-mode#printable-certificate .border-outline-variant\/40,
+.pdf-export-mode #printable-certificate .border-outline-variant,
+.pdf-export-mode #printable-certificate .border-outline-variant\/40 {
+  border-color: #e2e8f0 !important;
+}
+

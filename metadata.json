@@ -1,0 +1,6 @@
+{
+  "name": "DSA Pattern Trainer",
+  "description": "Interactive DSA algorithm pattern predictor and knowledge trainer with live XP tracking and certificate generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
