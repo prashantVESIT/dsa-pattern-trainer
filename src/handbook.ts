@@ -5,6 +5,14 @@
 
 import { HANDBOOK_PATTERNS, SUMMARY_COMPARISON_TABLE, PatternHandbookDetail } from './handbookData';
 
+function escapeHtml(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 export class HandbookManager {
   private activePatternId: number = 1; // Default to pattern 1 (Arrays & Hashing)
   private searchQuery: string = '';
@@ -190,7 +198,7 @@ export class HandbookManager {
               <span class="material-symbols-outlined text-primary" style="font-size: 22px;">help_outline</span>
               1. What is this Pattern?
             </h3>
-            <p class="text-on-surface-variant text-sm leading-relaxed">${p.whatIsIt}</p>
+            <p class="text-on-surface-variant text-sm leading-relaxed">${escapeHtml(p.whatIsIt)}</p>
           </div>
 
           <div class="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/50 flex flex-col gap-3">
@@ -198,7 +206,7 @@ export class HandbookManager {
               <span class="material-symbols-outlined text-secondary" style="font-size: 22px;">bolt</span>
               2. Why is it Used?
             </h3>
-            <p class="text-on-surface-variant text-sm leading-relaxed">${p.whyUsed}</p>
+            <p class="text-on-surface-variant text-sm leading-relaxed">${escapeHtml(p.whyUsed)}</p>
           </div>
         </div>
 
@@ -212,7 +220,7 @@ export class HandbookManager {
             ${p.whenToUse.map(item => `
               <li class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/40 flex items-start gap-3">
                 <span class="material-symbols-outlined text-secondary flex-shrink-0 mt-0.5" style="font-size: 18px;">check_circle</span>
-                <span class="text-xs text-on-surface font-medium leading-relaxed">${item}</span>
+                <span class="text-xs text-on-surface font-medium leading-relaxed">${escapeHtml(item)}</span>
               </li>
             `).join('')}
           </ul>
@@ -230,9 +238,9 @@ export class HandbookManager {
               ${p.keywords.map(kw => `
                 <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/40 flex flex-col gap-1.5">
                   <span class="px-2.5 py-0.5 rounded-md bg-secondary/10 border border-secondary/30 text-secondary text-xs font-black self-start">
-                    ${kw.word}
+                    ${escapeHtml(kw.word)}
                   </span>
-                  <p class="text-[11px] text-on-surface-variant leading-relaxed">${kw.explanation}</p>
+                  <p class="text-[11px] text-on-surface-variant leading-relaxed">${escapeHtml(kw.explanation)}</p>
                 </div>
               `).join('')}
             </div>
@@ -247,7 +255,7 @@ export class HandbookManager {
             <div class="flex flex-col gap-3">
               ${p.recognitionTips.map(tip => `
                 <div class="p-4 rounded-xl bg-surface-container-low border-l-4 border-primary text-xs text-on-surface leading-relaxed italic">
-                  "${tip}"
+                  "${escapeHtml(tip)}"
                 </div>
               `).join('')}
             </div>
@@ -263,11 +271,11 @@ export class HandbookManager {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="p-5 rounded-2xl bg-error-container/10 border border-error/30 flex flex-col gap-2">
               <p class="text-xs font-black uppercase text-error tracking-wider">Brute Force Approach</p>
-              <p class="text-xs text-on-surface-variant leading-relaxed">${p.bruteForceVsOptimized.bruteForce}</p>
+              <p class="text-xs text-on-surface-variant leading-relaxed">${escapeHtml(p.bruteForceVsOptimized.bruteForce)}</p>
             </div>
             <div class="p-5 rounded-2xl bg-secondary/10 border border-secondary/30 flex flex-col gap-2">
               <p class="text-xs font-black uppercase text-secondary tracking-wider">Optimized Pattern Approach</p>
-              <p class="text-xs text-on-surface-variant leading-relaxed">${p.bruteForceVsOptimized.optimized}</p>
+              <p class="text-xs text-on-surface-variant leading-relaxed">${escapeHtml(p.bruteForceVsOptimized.optimized)}</p>
             </div>
           </div>
         </div>
@@ -284,7 +292,7 @@ export class HandbookManager {
                 <span class="size-6 rounded-full bg-primary/20 border border-primary text-primary text-xs font-black flex items-center justify-center flex-shrink-0">
                   ${idx + 1}
                 </span>
-                <span class="text-xs text-on-surface font-mono font-medium leading-relaxed mt-0.5">${step}</span>
+                <span class="text-xs text-on-surface font-mono font-medium leading-relaxed mt-0.5">${escapeHtml(step)}</span>
               </div>
             `).join('')}
           </div>
@@ -300,13 +308,13 @@ export class HandbookManager {
             ${p.javaSyntax.map((syn, idx) => `
               <div class="flex flex-col gap-2 bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant">
                 <div class="flex justify-between items-center">
-                  <h4 class="text-white text-xs font-bold">${syn.title}</h4>
+                  <h4 class="text-white text-xs font-bold">${escapeHtml(syn.title)}</h4>
                   <button data-copy-id="syntax-${idx}" class="copy-btn text-[11px] text-primary font-bold hover:underline flex items-center gap-1">
                     <span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span> Copy
                   </button>
                 </div>
-                <p class="text-[11px] text-on-surface-variant mb-2">${syn.description}</p>
-                <pre id="syntax-${idx}" class="font-mono text-xs text-blue-200 overflow-x-auto whitespace-pre leading-relaxed custom-scrollbar">${syn.code}</pre>
+                <p class="text-[11px] text-on-surface-variant mb-2">${escapeHtml(syn.description)}</p>
+                <pre id="syntax-${idx}" class="font-mono text-xs text-blue-200 overflow-x-auto whitespace-pre leading-relaxed custom-scrollbar">${escapeHtml(syn.code)}</pre>
               </div>
             `).join('')}
           </div>
@@ -324,7 +332,7 @@ export class HandbookManager {
             </button>
           </div>
           <div class="bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant font-mono text-xs text-secondary overflow-x-auto custom-scrollbar">
-            <pre id="full-java-code" class="whitespace-pre leading-relaxed">${p.completeJavaCode}</pre>
+            <pre id="full-java-code" class="whitespace-pre leading-relaxed">${escapeHtml(p.completeJavaCode)}</pre>
           </div>
         </div>
 
@@ -347,15 +355,15 @@ export class HandbookManager {
               <tbody class="divide-y divide-outline-variant/30 text-white font-mono">
                 <tr>
                   <td class="p-4 text-error font-sans font-bold">Brute Force</td>
-                  <td class="p-4 text-error">${p.complexityComparison.bruteTime}</td>
-                  <td class="p-4">${p.complexityComparison.bruteSpace}</td>
+                  <td class="p-4 text-error">${escapeHtml(p.complexityComparison.bruteTime)}</td>
+                  <td class="p-4">${escapeHtml(p.complexityComparison.bruteSpace)}</td>
                   <td class="p-4 text-on-surface-variant font-sans text-[11px]">Unoptimized nested evaluations</td>
                 </tr>
                 <tr>
-                  <td class="p-4 text-secondary font-sans font-bold">${p.name} (Optimized)</td>
-                  <td class="p-4 text-secondary">${p.complexityComparison.optTime}</td>
-                  <td class="p-4 text-secondary">${p.complexityComparison.optSpace}</td>
-                  <td class="p-4 text-on-surface-variant font-sans text-[11px]">${p.complexityComparison.notes}</td>
+                  <td class="p-4 text-secondary font-sans font-bold">${escapeHtml(p.name)} (Optimized)</td>
+                  <td class="p-4 text-secondary">${escapeHtml(p.complexityComparison.optTime)}</td>
+                  <td class="p-4 text-secondary">${escapeHtml(p.complexityComparison.optSpace)}</td>
+                  <td class="p-4 text-on-surface-variant font-sans text-[11px]">${escapeHtml(p.complexityComparison.notes)}</td>
                 </tr>
               </tbody>
             </table>
@@ -366,14 +374,14 @@ export class HandbookManager {
         <div class="flex flex-col gap-4">
           <h3 class="text-white text-lg font-bold flex items-center gap-2">
             <span class="material-symbols-outlined text-secondary" style="font-size: 22px;">schema</span>
-            11. Visual Explanation (${p.visualExplanation.diagramType})
+            11. Visual Explanation (${escapeHtml(p.visualExplanation.diagramType)})
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             ${p.visualExplanation.steps.map((st, idx) => `
               <div class="p-5 rounded-xl bg-surface-container-low border border-outline-variant/50 flex flex-col gap-2">
                 <span class="text-[10px] font-black uppercase text-primary tracking-widest">Phase 0${idx + 1}</span>
-                <h4 class="text-white text-xs font-bold">${st.label}</h4>
-                <p class="text-[11px] text-on-surface-variant leading-relaxed">${st.desc}</p>
+                <h4 class="text-white text-xs font-bold">${escapeHtml(st.label)}</h4>
+                <p class="text-[11px] text-on-surface-variant leading-relaxed">${escapeHtml(st.desc)}</p>
               </div>
             `).join('')}
           </div>
@@ -390,9 +398,9 @@ export class HandbookManager {
               <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/40 flex flex-col gap-1.5">
                 <h4 class="text-white text-xs font-bold text-secondary flex items-center gap-1.5">
                   <span class="material-symbols-outlined" style="font-size: 16px;">memory</span>
-                  ${app.domain}
+                  ${escapeHtml(app.domain)}
                 </h4>
-                <p class="text-[11px] text-on-surface-variant leading-relaxed">${app.description}</p>
+                <p class="text-[11px] text-on-surface-variant leading-relaxed">${escapeHtml(app.description)}</p>
               </div>
             `).join('')}
           </div>
@@ -415,11 +423,11 @@ export class HandbookManager {
               return `
                 <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/40 flex items-center justify-between gap-3">
                   <div class="flex flex-col gap-1">
-                    <span class="text-xs font-bold text-white">${prob.title}</span>
-                    <span class="text-[10px] text-outline">${prob.linkTitle}</span>
+                    <span class="text-xs font-bold text-white">${escapeHtml(prob.title)}</span>
+                    <span class="text-[10px] text-outline">${escapeHtml(prob.linkTitle)}</span>
                   </div>
                   <span class="px-2 py-0.5 rounded-full border text-[10px] font-black uppercase ${diffClass}">
-                    ${prob.difficulty}
+                    ${escapeHtml(prob.difficulty)}
                   </span>
                 </div>
               `;
@@ -438,7 +446,7 @@ export class HandbookManager {
               ${p.commonMistakes.map(m => `
                 <div class="p-4 rounded-xl bg-error-container/10 border border-error/30 flex items-start gap-3">
                   <span class="material-symbols-outlined text-error flex-shrink-0" style="font-size: 18px;">error</span>
-                  <span class="text-xs text-on-surface-variant leading-relaxed">${m}</span>
+                  <span class="text-xs text-on-surface-variant leading-relaxed">${escapeHtml(m)}</span>
                 </div>
               `).join('')}
             </div>
@@ -453,7 +461,7 @@ export class HandbookManager {
               ${p.interviewTips.map(tip => `
                 <div class="p-4 rounded-xl bg-primary/10 border border-primary/30 flex items-start gap-3">
                   <span class="material-symbols-outlined text-primary flex-shrink-0" style="font-size: 18px;">record_voice_over</span>
-                  <span class="text-xs text-on-surface-variant leading-relaxed">${tip}</span>
+                  <span class="text-xs text-on-surface-variant leading-relaxed">${escapeHtml(tip)}</span>
                 </div>
               `).join('')}
             </div>
@@ -469,19 +477,19 @@ export class HandbookManager {
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
             <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/40">
               <p class="text-[10px] font-black text-primary uppercase mb-1">When to Use</p>
-              <p class="text-on-surface-variant leading-relaxed">${p.keyTakeaways.whenToUse}</p>
+              <p class="text-on-surface-variant leading-relaxed">${escapeHtml(p.keyTakeaways.whenToUse)}</p>
             </div>
             <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/40">
               <p class="text-[10px] font-black text-secondary uppercase mb-1">Why It Works</p>
-              <p class="text-on-surface-variant leading-relaxed">${p.keyTakeaways.whyItWorks}</p>
+              <p class="text-on-surface-variant leading-relaxed">${escapeHtml(p.keyTakeaways.whyItWorks)}</p>
             </div>
             <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/40">
               <p class="text-[10px] font-black text-white uppercase mb-1">Complexity</p>
-              <p class="text-on-surface-variant font-mono leading-relaxed">${p.keyTakeaways.complexity}</p>
+              <p class="text-on-surface-variant font-mono leading-relaxed">${escapeHtml(p.keyTakeaways.complexity)}</p>
             </div>
             <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/40">
               <p class="text-[10px] font-black text-primary uppercase mb-1">Recognition Trick</p>
-              <p class="text-on-surface-variant leading-relaxed">${p.keyTakeaways.recognitionTrick}</p>
+              <p class="text-on-surface-variant leading-relaxed">${escapeHtml(p.keyTakeaways.recognitionTrick)}</p>
             </div>
           </div>
         </div>

@@ -1,5 +1,30 @@
 @import "tailwindcss";
 
+/* Global Transparent & Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 203, 137, 0.25) !important;
+  border-radius: 9999px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 203, 137, 0.5) !important;
+}
+
+/* Firefox scrollbar support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 203, 137, 0.25) transparent;
+}
+
 /* High Contrast Mode CSS Rules */
 html.high-contrast {
   color-scheme: dark;

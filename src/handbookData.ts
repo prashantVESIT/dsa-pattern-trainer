@@ -123,35 +123,62 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
       { word: "Frequency", explanation: "Signals counting elements using `map.put(key, map.getOrDefault(key, 0) + 1)`." }
     ],
     recognitionTips: [
-      "If the problem asks for pairs/complements without requiring sorted order, use a HashMap.",
-      "If you need to verify if elements are identical or anagrams, count character frequencies.",
-      "If order doesn't matter and you need existence check in O(1), reach for HashSet."
+      "If the problem asks for pairs/complements without requiring sorted order, use a HashMap<Integer, Integer>.",
+      "If you need to verify if elements are identical or anagrams, count character frequencies with a Map or array.",
+      "If order doesn't matter and you need existence check in O(1), reach for a HashSet<Integer> or HashSet<String>."
     ],
     bruteForceVsOptimized: {
       bruteForce: "Brute Force: Check every possible pair using nested loops (i and j). Takes O(n²) time and O(1) auxiliary space.",
-      optimized: "Optimized: Iterate once through the array, computing target - num[i], and check if it exists in a HashMap. Takes O(n) time and O(n) space."
+      optimized: "Optimized: Iterate once through the array, computing target - num[i], and check if it exists in a Map<Integer, Integer>. Takes O(n) time and O(n) space."
     },
     stepByStepAlgorithm: [
-      "Initialize an empty HashMap (or array of size 26 for ASCII characters).",
-      "Loop through each element `x` at index `i` in the array.",
-      "Calculate required value `needed = target - x`.",
-      "If `map.containsKey(needed)`, return `new int[]{map.get(needed), i}`.",
-      "Otherwise, insert `map.put(x, i)` into the map.",
-      "If loop finishes with no match, return empty or handle no-solution case."
+      "Initialize an empty `Map<Integer, Integer> map = new HashMap<>();` to store number-to-index mappings.",
+      "Loop through each element `nums[i]` at index `i` in the array.",
+      "Calculate required complement value `int complement = target - nums[i]`.",
+      "If `map.containsKey(complement)`, return `new int[] { map.get(complement), i }`.",
+      "Otherwise, insert `map.put(nums[i], i)` into the map.",
+      "If loop completes without a match, return `new int[0]`."
     ],
     javaSyntax: [
       {
         title: "HashMap Frequency Counter",
-        description: "Counting character or integer occurrences cleanly in Java.",
-        code: "Map<Character, Integer> counts = new HashMap<>();\nfor (char c : str.toCharArray()) {\n    counts.put(c, counts.getOrDefault(c, 0) + 1);\n}"
+        description: "Counting character or integer occurrences cleanly in Java 17.",
+        code: "Map<Character, Integer> counts = new HashMap<>();\nfor (char c : str.toCharArray()) {\n    // Safely increment frequency count\n    counts.put(c, counts.getOrDefault(c, 0) + 1);\n}"
       },
       {
         title: "HashSet Duplicate Detector",
-        description: "Instantly check if an array contains duplicates.",
-        code: "Set<Integer> seen = new HashSet<>();\nfor (int num : nums) {\n    if (!seen.add(num)) return true; // add returns false if element exists\n}"
+        description: "Instantly check if an array contains duplicates using generics.",
+        code: "Set<Integer> seen = new HashSet<>();\nfor (int num : nums) {\n    // add() returns false if element already exists in set\n    if (!seen.add(num)) {\n        return true;\n    }\n}\nreturn false;"
       }
     ],
-    completeJavaCode: `import java.util.HashMap;\nimport java.util.Map;\n\npublic class TwoSumSolution {\n    public int[] twoSum(int[] nums, int target) {\n        // Map stores value -> index\n        Map<Integer, Integer> map = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int complement = target - nums[i];\n            if (map.containsKey(complement)) {\n                return new int[] { map.get(complement), i };\n            }\n            map.put(nums[i], i);\n        }\n        throw new IllegalArgumentException("No two sum solution found");\n    }\n}`,
+    completeJavaCode: `import java.util.HashMap;
+import java.util.Map;
+
+public class TwoSumSolution {
+    public int[] twoSum(int[] nums, int target) {
+        if (nums == null || nums.length < 2) {
+            return new int[0];
+        }
+
+        // HashMap stores value -> array index mapping
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+
+            // Check if complement has been seen previously
+            if (map.containsKey(complement)) {
+                return new int[] { map.get(complement), i };
+            }
+
+            // Store current number and its index in map
+            map.put(nums[i], i);
+        }
+
+        // Return empty array if no pair satisfies target
+        return new int[0];
+    }
+}`,
     complexityComparison: {
       bruteTime: "O(n²)",
       bruteSpace: "O(1)",
@@ -162,8 +189,8 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
     visualExplanation: {
       diagramType: "HashMap Lookup Flow",
       steps: [
-        { label: "Step 1: Inspect 2", desc: "Target = 9. Needed = 7. HashMap is empty. Store map[2] = 0." },
-        { label: "Step 2: Inspect 7", desc: "Target = 9. Needed = 2. HashMap contains 2 at index 0! Match found: [0, 1]." }
+        { label: "Step 1: Inspect 2", desc: "Target = 9. Needed = 7. Map is empty. Store map.put(2, 0)." },
+        { label: "Step 2: Inspect 7", desc: "Target = 9. Needed = 2. Map contains 2 at index 0! Match found: [0, 1]." }
       ]
     },
     realWorldApps: [
@@ -180,12 +207,12 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
     ],
     commonMistakes: [
       "Using the same element twice (e.g. adding index i to itself if num == complement).",
-      "Forgetting to handle hash collisions or assuming iteration order is preserved in HashMap (use LinkedHashMap if needed).",
-      "Creating unnecessary objects inside tight loops instead of reusing map instances."
+      "Forgetting to specify explicit generic types like Map<Integer, Integer> or Set<Character>.",
+      "Assuming iteration order is preserved in HashMap (use LinkedHashMap if insertion order matters)."
     ],
     interviewTips: [
-      "Always state the time-space tradeoff explicitly to your interviewer: 'I can solve this in O(n) time using O(n) extra space with a HashMap.'",
-      "If the input alphabet is fixed (e.g. lowercase English letters), prefer an `int[26]` primitive array over a HashMap for O(1) memory overhead."
+      "Always state the time-space tradeoff explicitly: 'I can solve this in O(n) time using O(n) extra space with a HashMap.'",
+      "If the input alphabet is fixed (e.g. lowercase English letters), prefer an `int[26]` primitive array over a Map for lower memory overhead."
     ],
     keyTakeaways: {
       whenToUse: "Unsorted search, duplicate checks, frequency counts, complement pairs.",
@@ -223,27 +250,57 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
       optimized: "Optimized: Place left pointer at start (0) and right pointer at end (n-1). Move left rightward if sum < target; move right leftward if sum > target. Time complexity: O(n), Space: O(1)."
     },
     stepByStepAlgorithm: [
-      "Set `left = 0` and `right = nums.length - 1`.",
+      "Initialize `left = 0` and `right = s.length() - 1`.",
       "Loop while `left < right`.",
-      "Calculate `currentSum = nums[left] + nums[right]`.",
-      "If `currentSum == target`, return `[left + 1, right + 1]` (or target indices).",
-      "If `currentSum < target`, increment `left++` to increase sum.",
-      "If `currentSum > target`, decrement `right--` to decrease sum.",
-      "Return empty if pointers cross without match."
+      "Increment `left` while `s.charAt(left)` is non-alphanumeric.",
+      "Decrement `right` while `s.charAt(right)` is non-alphanumeric.",
+      "Compare `Character.toLowerCase(s.charAt(left))` and `Character.toLowerCase(s.charAt(right))`.",
+      "If they don't match, return `false`. Otherwise, increment `left++` and decrement `right--`.",
+      "If loop terminates without mismatch, return `true`."
     ],
     javaSyntax: [
       {
         title: "Converging Pointers Loop",
-        description: "Standard layout for searching sorted arrays or palindrome validation.",
-        code: "int left = 0, right = nums.length - 1;\nwhile (left < right) {\n    int sum = nums[left] + nums[right];\n    if (sum == target) return true;\n    else if (sum < target) left++;\n    else right--;\n}"
+        description: "Standard template for searching sorted arrays or palindrome validation.",
+        code: "int left = 0, right = nums.length - 1;\nwhile (left < right) {\n    int sum = nums[left] + nums[right];\n    if (sum == target) {\n        return new int[] { left, right };\n    } else if (sum < target) {\n        left++;\n    } else {\n        right--;\n    }\n}"
       },
       {
-        title: "Fast & Slow Pointers (In-place Swap)",
-        description: "Remove duplicates or move zeros in-place.",
+        title: "Fast & Slow Pointers (In-place Array Modification)",
+        description: "Remove duplicate elements or zeros in O(1) space.",
         code: "int slow = 0;\nfor (int fast = 0; fast < nums.length; fast++) {\n    if (nums[fast] != 0) {\n        nums[slow++] = nums[fast];\n    }\n}"
       }
     ],
-    completeJavaCode: `public class TwoPointerSolutions {\n    public boolean isPalindrome(String s) {\n        int left = 0, right = s.length() - 1;\n        while (left < right) {\n            while (left < right && !Character.isLetterOrDigit(s.charAt(left))) left++;\n            while (left < right && !Character.isLetterOrDigit(s.charAt(right))) right--;\n            if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))) {\n                return false;\n            }\n            left++;\n            right--;\n        }\n        return true;\n    }\n}`,
+    completeJavaCode: `public class TwoPointerSolutions {
+    public boolean isPalindrome(String s) {
+        if (s == null) {
+            return false;
+        }
+
+        int left = 0;
+        int right = s.length() - 1;
+
+        while (left < right) {
+            // Skip non-alphanumeric characters from left
+            while (left < right && !Character.isLetterOrDigit(s.charAt(left))) {
+                left++;
+            }
+            // Skip non-alphanumeric characters from right
+            while (left < right && !Character.isLetterOrDigit(s.charAt(right))) {
+                right--;
+            }
+
+            // Compare case-insensitive characters
+            if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))) {
+                return false;
+            }
+
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+}`,
     complexityComparison: {
       bruteTime: "O(n²)",
       bruteSpace: "O(1)",
@@ -293,64 +350,95 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
     name: "Sliding Window",
     difficulty: "Intermediate",
     readTime: "7 min read",
-    shortDescription: "Maintain a dynamic or fixed contiguous sub-window over an array to process contiguous range problems in linear time.",
-    whatIsIt: "Sliding Window maintains a contiguous subsegment of an array or string defined by `[left, right]`. As the right boundary expands, the left boundary shrinks to preserve window conditions.",
-    whyUsed: "Without Sliding Window, evaluating all subarrays of size k takes O(n * k) or O(n²). Sliding Window reuses previous calculations by subtracting the outgoing element and adding the incoming element in O(1) per step.",
+    shortDescription: "Maintain a dynamic or fixed contiguous sub-window over an array or string to process contiguous range problems in linear time.",
+    whatIsIt: "Sliding Window maintains a contiguous subsegment of a string or array defined by `[left, right]`. As `right` expands the window, `left` shrinks it whenever a window condition (such as duplicate characters) is violated.",
+    whyUsed: "Without Sliding Window, evaluating all substrings or subarrays takes O(N²) or O(N³). Sliding Window reuses previous state in O(1) time per step, ensuring linear O(N) execution.",
     whenToUse: [
-      "When the problem specifies 'contiguous subarray' or 'substring'.",
-      "When looking for min/max length or sum satisfying a condition (e.g. max sum subarray of size K).",
-      "When string problem asks for 'longest substring with at most K distinct characters'."
+      "When solving string problems asking for 'Longest substring without repeating characters'.",
+      "When problem specifies 'contiguous subarray' or 'substring'.",
+      "When finding minimum or maximum window length/sum satisfying a specific constraint."
     ],
     keywords: [
-      { word: "Subarray", explanation: "Contiguous segment of array elements." },
-      { word: "Substring", explanation: "Contiguous sequence of characters within string." },
-      { word: "Window", explanation: "Bounded range [L, R] that slides incrementally across the dataset." },
-      { word: "Maximum/Minimum", explanation: "Target constraint that governs when the window expands or contracts." }
+      { word: "Substring", explanation: "Contiguous sequence of characters within a string." },
+      { word: "HashSet window", explanation: "Set<Character> used to track unique characters in current window range [left, right]." },
+      { word: "Dynamic Window", explanation: "Window shrinks from left whenever duplicate character is detected." },
+      { word: "Contiguous Range", explanation: "Sequential elements bounded between left and right pointers." }
     ],
     recognitionTips: [
-      "If problem says 'Contiguous Subarray of Size K', think Fixed Sliding Window.",
-      "If problem says 'Shortest Subarray with Sum >= S', think Variable Sliding Window.",
-      "If problem says 'Longest Substring Without Repeating Characters', think Variable Sliding Window + HashSet/HashMap."
+      "If problem says 'Longest Substring Without Repeating Characters', use Variable Sliding Window + Set<Character>.",
+      "If problem specifies a fixed window size K, expand right and subtract `arr[right - K]` when right >= K - 1.",
+      "If problem says 'Shortest Subarray with Sum >= S', shrink window from left as long as constraint is met."
     ],
     bruteForceVsOptimized: {
-      bruteForce: "Brute Force: Recompute sum/state for every subarray starting at index i. Time: O(n * k) or O(n²).",
-      optimized: "Optimized: Slide window by 1 element. Add `arr[right]` to current sum, subtract `arr[left]` from current sum. Time: O(n), Space: O(1) or O(K)."
+      bruteForce: "Brute Force: Check all possible substrings with nested loops and verify character uniqueness for each. Takes O(N²) or O(N³) time.",
+      optimized: "Optimized: Maintain a Set<Character> set and two pointers left and right. Shrink left whenever a duplicate is found. Takes O(N) time and O(min(N, M)) space."
     },
     stepByStepAlgorithm: [
-      "Initialize `left = 0`, `currentSum = 0`, `maxSum = MIN_VALUE`.",
-      "Loop `right` from `0` to `n - 1`.",
-      "Add `nums[right]` to `currentSum`.",
-      "If window size `(right - left + 1) == k` (fixed window):",
-      "  Update `maxSum = Math.max(maxSum, currentSum)`.",
-      "  Subtract `nums[left]` from `currentSum` and increment `left++`.",
-      "Return `maxSum`."
+      "Initialize `Set<Character> set = new HashSet<>();` to store unique characters in current window.",
+      "Initialize `int left = 0;` and `int maxLength = 0;`.",
+      "Loop `right` from `0` to `s.length() - 1` to expand the right boundary.",
+      "While `set.contains(s.charAt(right))`, remove `s.charAt(left)` from `set` and increment `left++`.",
+      "Add `s.charAt(right)` to `set`.",
+      "Calculate window size `(right - left + 1)` and update `maxLength = Math.max(maxLength, right - left + 1)`.",
+      "Return `maxLength`."
     ],
     javaSyntax: [
       {
-        title: "Fixed Window Template",
-        description: "Optimal template for window of size K.",
-        code: "int currentSum = 0, maxSum = Integer.MIN_VALUE;\nfor (int right = 0; right < nums.length; right++) {\n    currentSum += nums[right];\n    if (right >= k - 1) {\n        maxSum = Math.max(maxSum, currentSum);\n        currentSum -= nums[right - (k - 1)];\n    }\n}"
+        title: "Variable Window Template (Longest Substring without Repeats)",
+        description: "Optimal Java 17 implementation using explicit generic types.",
+        code: "Set<Character> set = new HashSet<>();\n\nint left = 0;\nint maxLength = 0;\n\nfor (int right = 0; right < s.length(); right++) {\n    while (set.contains(s.charAt(right))) {\n        set.remove(s.charAt(left++));\n    }\n    set.add(s.charAt(right));\n    maxLength = Math.max(maxLength, right - left + 1);\n}"
       },
       {
-        title: "Variable Window Template (String)",
-        description: "Longest substring without repeating characters.",
-        code: "Set<Character> set = new HashSet<>();\nint left = 0, maxLength = 0;\nfor (int right = 0; right < s.length(); right++) {\n    while (set.contains(s.charAt(right))) {\n        set.remove(s.charAt(left++));\n    }\n    set.add(s.charAt(right));\n    maxLength = Math.max(maxLength, right - left + 1);\n}"
+        title: "Fixed Window Template (Subarray of Size K)",
+        description: "Standard template for rolling window of size K.",
+        code: "int currentSum = 0, maxSum = Integer.MIN_VALUE;\nfor (int right = 0; right < nums.length; right++) {\n    currentSum += nums[right];\n    if (right >= k - 1) {\n        maxSum = Math.max(maxSum, currentSum);\n        currentSum -= nums[right - (k - 1)];\n    }\n}"
       }
     ],
-    completeJavaCode: `public class SlidingWindowSolution {\n    public int maxSubArraySum(int[] nums, int k) {\n        if (nums == null || nums.length < k) return 0;\n        int windowSum = 0;\n        for (int i = 0; i < k; i++) {\n            windowSum += nums[i];\n        }\n        int maxSum = windowSum;\n        for (int right = k; right < nums.length; right++) {\n            windowSum += nums[right] - nums[right - k];\n            maxSum = Math.max(maxSum, windowSum);\n        }\n        return maxSum;\n    }\n}`,
+    completeJavaCode: `import java.util.HashSet;
+import java.util.Set;
+
+public class SlidingWindowSolution {
+    public int lengthOfLongestSubstring(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+
+        // Set stores unique characters in the current window [left, right]
+        Set<Character> set = new HashSet<>();
+
+        int left = 0;
+        int maxLength = 0;
+
+        // Expand the right boundary of the window
+        for (int right = 0; right < s.length(); right++) {
+            // Shrink window from left if character at right is duplicate
+            while (set.contains(s.charAt(right))) {
+                set.remove(s.charAt(left++));
+            }
+            
+            // Add current character to window set
+            set.add(s.charAt(right));
+            
+            // Update maximum length found so far
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+
+        return maxLength;
+    }
+}`,
     complexityComparison: {
-      bruteTime: "O(n * k)",
-      bruteSpace: "O(1)",
+      bruteTime: "O(n²)",
+      bruteSpace: "O(min(n, m))",
       optTime: "O(n)",
-      optSpace: "O(1)",
-      notes: "Each element enters the window once (right) and leaves at most once (left), guaranteeing 2n operations total = O(n)."
+      optSpace: "O(min(n, m))",
+      notes: "Each character enters the set once (right pointer) and leaves at most once (left pointer), guaranteeing 2n operations total = O(n)."
     },
     visualExplanation: {
-      diagramType: "Window Shift",
+      diagramType: "Window Shift with HashSet",
       steps: [
-        { label: "Window [0..2] k=3", desc: "[2, 1, 5, 1, 3, 2] -> Sum = 2+1+5 = 8. Max = 8." },
-        { label: "Slide Right to [1..3]", desc: "Subtract 2, Add 1 -> Sum = 8 - 2 + 1 = 7. Max = 8." },
-        { label: "Slide Right to [2..4]", desc: "Subtract 1, Add 3 -> Sum = 7 - 1 + 3 = 9. Max = 9!" }
+        { label: "Expand Window", desc: "s = 'abcabcbb'. right=0 ('a'). Set = ['a'], maxLength = 1." },
+        { label: "Expand to 'c'", desc: "right=2 ('c'). Set = ['a', 'b', 'c'], maxLength = 3." },
+        { label: "Duplicate Detected", desc: "right=3 ('a'). Set contains 'a'! Shrink left (remove 'a', left=1). Add 'a'. Set = ['b', 'c', 'a'], maxLength = 3." }
       ]
     },
     realWorldApps: [
@@ -359,26 +447,26 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
       { domain: "Video Streaming Buffers", description: "Managing adaptive bitrate streaming buffer windows." }
     ],
     commonProblems: [
-      { title: "Maximum Sum Subarray of Size K", difficulty: "Easy", linkTitle: "GfK Practice" },
       { title: "Longest Substring Without Repeating Characters", difficulty: "Medium", linkTitle: "LeetCode 3" },
       { title: "Minimum Size Subarray Sum", difficulty: "Medium", linkTitle: "LeetCode 209" },
       { title: "Permutation in String", difficulty: "Medium", linkTitle: "LeetCode 567" },
+      { title: "Fruit Into Baskets", difficulty: "Medium", linkTitle: "LeetCode 904" },
       { title: "Sliding Window Maximum", difficulty: "Hard", linkTitle: "LeetCode 239" }
     ],
     commonMistakes: [
-      "Shrinking the window using `if` instead of `while` in variable window problems.",
+      "Shrinking the window using `if` instead of `while` when multiple elements need removal.",
       "Off-by-one errors when calculating window length (`right - left + 1` vs `right - left`).",
-      "Forgetting to update global result BEFORE shrinking the window when expanding."
+      "Forgetting to declare complete generic types like `Set<Character> set = new HashSet<>();`."
     ],
     interviewTips: [
-      "Classify the problem immediately: 'Is the window size fixed K, or is it variable based on a target condition?'",
-      "For Sliding Window Maximum (Hard), mention using a `Deque` to store indices of potential max elements in decreasing order."
+      "Classify the problem immediately: 'Is the window size fixed K, or is it variable based on a target condition like uniqueness?'",
+      "Explain the time complexity clearly: 'Even with the nested while loop, left and right pointers each move at most N times, yielding O(N) total time.'"
     ],
     keyTakeaways: {
-      whenToUse: "Contiguous subarrays, substrings, moving averages, min/max window range.",
+      whenToUse: "Contiguous substrings, unique character ranges, sliding window maximum.",
       whyItWorks: "Reuses previous window computations by adding incoming element and removing outgoing element.",
-      complexity: "Time: O(n) | Space: O(1) or O(K).",
-      recognitionTrick: "Look for 'contiguous', 'subarray', 'substring', or 'window size K'."
+      complexity: "Time: O(n) | Space: O(min(n, m)).",
+      recognitionTrick: "Look for 'Longest substring without repeating characters' or 'contiguous window'."
     }
   },
   {
@@ -386,23 +474,23 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
     name: "Prefix Sum",
     difficulty: "Beginner",
     readTime: "5 min read",
-    shortDescription: "Precompute cumulative totals in an auxiliary array to answer range sum queries in constant O(1) time.",
-    whatIsIt: "Prefix Sum creates a precomputed array `prefix` where `prefix[i]` holds the sum of elements from index `0` up to `i`. Range sum from `L` to `R` is then computed as `prefix[R] - prefix[L-1]`.",
+    shortDescription: "Precompute cumulative totals in an auxiliary array or HashMap to answer range sum queries in constant O(1) time.",
+    whatIsIt: "Prefix Sum creates a precomputed array or running total `prefix` where `prefix[i]` holds the sum of elements from index `0` up to `i`. Range sum from `L` to `R` is then computed as `prefix[R] - prefix[L-1]`.",
     whyUsed: "Evaluating range sums directly on an array takes O(N) time per query. For Q queries, brute force takes O(Q * N). Prefix Sum reduces Q queries to O(Q * 1) = O(Q) total time after O(N) precomputation.",
     whenToUse: [
       "When you need to answer multiple range sum queries on an array that doesn't change (static array).",
-      "When finding subarrays with a specific target sum (Prefix Sum + HashMap technique).",
+      "When finding subarrays with a specific target sum (Prefix Sum + Map<Integer, Integer> technique).",
       "When calculating cumulative counts or range updates (Difference Array)."
     ],
     keywords: [
       { word: "Range Query", explanation: "Question asking for sum or product between index L and R." },
       { word: "Running Sum", explanation: "Cumulative total built sequentially from start of array." },
-      { word: "Subarray Sum Equals K", explanation: "Indicates using HashMap storing prefixSum -> frequency." },
+      { word: "Subarray Sum Equals K", explanation: "Indicates using Map<Integer, Integer> storing prefixSum -> frequency." },
       { word: "Static Array", explanation: "Array that is not mutated between range queries." }
     ],
     recognitionTips: [
       "If the problem mentions 'Sum between index L and R multiple times', use Prefix Sum.",
-      "If finding 'Subarrays with sum equal to K', use Prefix Sum + HashMap (`map.containsKey(currentSum - K)`).",
+      "If finding 'Subarrays with sum equal to K', use Prefix Sum + Map<Integer, Integer> (`map.containsKey(currentSum - K)`).",
       "If problem involves 2D grid sub-rectangle sums, use 2D Prefix Sum Matrix."
     ],
     bruteForceVsOptimized: {
@@ -410,26 +498,58 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
       optimized: "Optimized: Precompute prefix array in O(N). Answer each range query `sum(L, R) = prefix[R] - prefix[L-1]` in O(1) time."
     },
     stepByStepAlgorithm: [
-      "Create array `prefix` of size `N` (or `N + 1` with 1-based indexing for cleaner bounds).",
-      "Set `prefix[0] = nums[0]`.",
-      "For `i = 1` to `N - 1`: `prefix[i] = prefix[i - 1] + nums[i]`.",
-      "To answer query for range `[L, R]`:",
-      "  If `L == 0`, return `prefix[R]`.",
-      "  Else return `prefix[R] - prefix[L - 1]`."
+      "Initialize `Map<Integer, Integer> prefixMap = new HashMap<>();` to store prefix sums and their frequencies.",
+      "Seed base case: `prefixMap.put(0, 1);` for subarrays starting at index 0.",
+      "Initialize `int currentSum = 0;` and `int resultCount = 0;`.",
+      "Loop through each `num` in `nums` array.",
+      "Add `num` to `currentSum`.",
+      "If `prefixMap.containsKey(currentSum - k)`, increment `resultCount += prefixMap.get(currentSum - k)`.",
+      "Store/update current prefix sum: `prefixMap.put(currentSum, prefixMap.getOrDefault(currentSum, 0) + 1)`.",
+      "Return `resultCount`."
     ],
     javaSyntax: [
       {
-        title: "Prefix Array Construction (1-based)",
-        description: "Adding dummy 0 at index 0 eliminates edge cases for L=0.",
-        code: "int[] prefix = new int[nums.length + 1];\nfor (int i = 0; i < nums.length; i++) {\n    prefix[i + 1] = prefix[i] + nums[i];\n}\n// Range sum [L, R] inclusive:\nint rangeSum = prefix[R + 1] - prefix[L];"
+        title: "Prefix Array Construction (1-based Indexing)",
+        description: "Adding dummy 0 at index 0 eliminates edge cases for L = 0.",
+        code: "int[] prefix = new int[nums.length + 1];\nfor (int i = 0; i < nums.length; i++) {\n    prefix[i + 1] = prefix[i] + nums[i];\n}\n// Range sum [left, right] inclusive (0-based indexing):\nint rangeSum = prefix[right + 1] - prefix[left];"
       },
       {
         title: "Subarray Sum Equals K (Prefix + HashMap)",
-        description: "Counts total subarrays whose elements sum up to K.",
-        code: "Map<Integer, Integer> map = new HashMap<>();\nmap.put(0, 1);\nint currentSum = 0, count = 0;\nfor (int num : nums) {\n    currentSum += num;\n    if (map.containsKey(currentSum - k)) {\n        count += map.get(currentSum - k);\n    }\n    map.put(currentSum, map.getOrDefault(currentSum, 0) + 1);\n}"
+        description: "Counts total subarrays whose elements sum up to K in O(N) time.",
+        code: "Map<Integer, Integer> prefixMap = new HashMap<>();\nprefixMap.put(0, 1); // Base case for subarray starting at index 0\n\nint currentSum = 0;\nint count = 0;\n\nfor (int num : nums) {\n    currentSum += num;\n    if (prefixMap.containsKey(currentSum - k)) {\n        count += prefixMap.get(currentSum - k);\n    }\n    prefixMap.put(currentSum, prefixMap.getOrDefault(currentSum, 0) + 1);\n}"
       }
     ],
-    completeJavaCode: `import java.util.HashMap;\nimport java.util.Map;\n\npublic class PrefixSumSolution {\n    public int subarraySum(int[] nums, int k) {\n        Map<Integer, Integer> prefixMap = new HashMap<>();\n        prefixMap.put(0, 1); // Base case for subarray starting at index 0\n        int currentSum = 0, resultCount = 0;\n        for (int num : nums) {\n            currentSum += num;\n            if (prefixMap.containsKey(currentSum - k)) {\n                resultCount += prefixMap.get(currentSum - k);\n            }\n            prefixMap.put(currentSum, prefixMap.getOrDefault(currentSum, 0) + 1);\n        }\n        return resultCount;\n    }\n}`,
+    completeJavaCode: `import java.util.HashMap;
+import java.util.Map;
+
+public class PrefixSumSolution {
+    public int subarraySum(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        // Map stores prefixSum -> frequency of occurrence
+        Map<Integer, Integer> prefixMap = new HashMap<>();
+        prefixMap.put(0, 1); // Base case: prefix sum of 0 appears once before array starts
+
+        int currentSum = 0;
+        int resultCount = 0;
+
+        for (int num : nums) {
+            currentSum += num; // Calculate running cumulative sum
+
+            // If (currentSum - k) exists in map, add its frequency
+            if (prefixMap.containsKey(currentSum - k)) {
+                resultCount += prefixMap.get(currentSum - k);
+            }
+
+            // Record or update frequency of current prefix sum
+            prefixMap.put(currentSum, prefixMap.getOrDefault(currentSum, 0) + 1);
+        }
+
+        return resultCount;
+    }
+}`,
     complexityComparison: {
       bruteTime: "Precompute: O(0), Query: O(N)",
       bruteSpace: "O(1)",
@@ -464,7 +584,7 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
     ],
     interviewTips: [
       "Mention 1-based indexing prefix array trick (`size = N + 1`) to eliminate `if (L == 0)` boundary checks.",
-      "If the problem includes negative numbers, Sliding Window fails, but Prefix Sum + HashMap works perfectly!"
+      "If the problem includes negative numbers, Sliding Window fails, but Prefix Sum + Map<Integer, Integer> works perfectly!"
     ],
     keyTakeaways: {
       whenToUse: "Range sum queries, pivot index, cumulative counts, target subarray sum.",
@@ -502,27 +622,65 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
       optimized: "Optimized: Backtrack immediately as soon as a partial solution violates constraints (Pruning). Drastically reduces visited states."
     },
     stepByStepAlgorithm: [
-      "Define recursive `backtrack(state, path, result)` helper function.",
-      "Base Case: If `path` meets target condition (e.g. `path.size() == target`), add copy `new ArrayList<>(path)` to `result` and return.",
-      "For each candidate `choice` in available decisions:",
-      "  If `choice` is valid (passes constraints):",
-      "    Make choice: `path.add(choice)`.",
-      "    Recurse: `backtrack(state, path, result)`.",
-      "    Undo choice (Backtrack): `path.remove(path.size() - 1)`."
+      "Define recursive `backtrack(nums, current, result)` helper function with explicit generics `List<Integer>` and `List<List<Integer>>`.",
+      "Base Case: If `current.size() == nums.length`, create deep copy `result.add(new ArrayList<>(current))` and return.",
+      "Loop through each candidate `num` in `nums`.",
+      "If `current.contains(num)`, skip (constraint check).",
+      "Step 1 (Make Choice): `current.add(num)`.",
+      "Step 2 (Explore): `backtrack(nums, current, result)`.",
+      "Step 3 (Backtrack / Undo Choice): `current.remove(current.size() - 1)`."
     ],
     javaSyntax: [
       {
-        title: "Standard Backtracking Template",
-        description: "Universal boilerplate for permutations and combination sum.",
-        code: "void backtrack(int[] nums, List<Integer> current, List<List<Integer>> result) {\n    if (current.size() == nums.length) {\n        result.add(new ArrayList<>(current)); // Make deep copy!\n        return;\n    }\n    for (int i = 0; i < nums.length; i++) {\n        if (current.contains(nums[i])) continue;\n        current.add(nums[i]);\n        backtrack(nums, current, result);      // Recurse\n        current.remove(current.size() - 1);    // Undo state!\n    }\n}"
+        title: "Standard Backtracking Template (Permutations)",
+        description: "Universal boilerplate for permutations using explicit generics.",
+        code: "private void backtrack(int[] nums, List<Integer> current, List<List<Integer>> result) {\n    if (current.size() == nums.length) {\n        result.add(new ArrayList<>(current)); // Deep copy required!\n        return;\n    }\n    for (int i = 0; i < nums.length; i++) {\n        if (current.contains(nums[i])) continue;\n        current.add(nums[i]);                  // 1. Make choice\n        backtrack(nums, current, result);      // 2. Recurse path\n        current.remove(current.size() - 1);    // 3. Undo choice (Backtrack)\n    }\n}"
       },
       {
         title: "Subsets / Combinations Template",
-        description: "Using start index to avoid duplicate combinations.",
-        code: "void backtrack(int start, int[] nums, List<Integer> current, List<List<Integer>> res) {\n    res.add(new ArrayList<>(current));\n    for (int i = start; i < nums.length; i++) {\n        current.add(nums[i]);\n        backtrack(i + 1, nums, current, res);\n        current.remove(current.size() - 1);\n    }\n}"
+        description: "Using start index to generate combinations without duplicates.",
+        code: "private void backtrack(int start, int[] nums, List<Integer> current, List<List<Integer>> result) {\n    result.add(new ArrayList<>(current)); // Deep copy current subset\n    for (int i = start; i < nums.length; i++) {\n        current.add(nums[i]);                    // 1. Choose\n        backtrack(i + 1, nums, current, result); // 2. Recurse next index\n        current.remove(current.size() - 1);      // 3. Undo choice\n    }\n}"
       }
     ],
-    completeJavaCode: `import java.util.ArrayList;\nimport java.util.List;\n\npublic class BacktrackingSolution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> result = new ArrayList<>();\n        backtrack(nums, new ArrayList<>(), result);\n        return result;\n    }\n\n    private void backtrack(int[] nums, List<Integer> current, List<List<Integer>> result) {\n        if (current.size() == nums.length) {\n            result.add(new ArrayList<>(current)); // Deep copy required!\n            return;\n        }\n        for (int num : nums) {\n            if (current.contains(num)) continue; // Skip used numbers\n            current.add(num);\n            backtrack(nums, current, result);\n            current.remove(current.size() - 1); // Backtrack step\n        }\n    }\n}`,
+    completeJavaCode: `import java.util.ArrayList;
+import java.util.List;
+
+public class BacktrackingSolution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return result;
+        }
+
+        List<Integer> current = new ArrayList<>();
+        backtrack(nums, current, result);
+        return result;
+    }
+
+    private void backtrack(int[] nums, List<Integer> current, List<List<Integer>> result) {
+        // Base Case: complete permutation constructed
+        if (current.size() == nums.length) {
+            result.add(new ArrayList<>(current)); // Deep copy to prevent state corruption
+            return;
+        }
+
+        for (int num : nums) {
+            // Constraint check: skip if number is already in current path
+            if (current.contains(num)) {
+                continue;
+            }
+
+            // Step 1: Choose
+            current.add(num);
+
+            // Step 2: Recurse
+            backtrack(nums, current, result);
+
+            // Step 3: Undo Choice (Backtrack)
+            current.remove(current.size() - 1);
+        }
+    }
+}`,
     complexityComparison: {
       bruteTime: "O(N^N)",
       bruteSpace: "O(N)",
@@ -551,13 +709,13 @@ export const HANDBOOK_PATTERNS: PatternHandbookDetail[] = [
       { title: "N-Queens", difficulty: "Hard", linkTitle: "LeetCode 51" }
     ],
     commonMistakes: [
-      "Adding `current` directly to `result.add(current)` instead of `result.add(new ArrayList<>(current))`. Since Java passes objects by reference, all entries become empty when backtracking finishes!",
+      "Adding `current` directly as `result.add(current)` instead of creating a deep copy `result.add(new ArrayList<>(current))`. Since Java passes object references, all entries become empty when backtracking completes!",
       "Forgetting the undo choice step `current.remove(current.size() - 1)`.",
-      "Not incrementing `start + 1` in combinations, causing infinite loops."
+      "Omitting explicit generic type declarations such as `List<Integer>` or `List<List<Integer>>`."
     ],
     interviewTips: [
-      "Always highlight the 3 essential steps of backtracking to your interviewer: 1. Choose, 2. Recurse, 3. Unchoose.",
-      "Emphasize deep copying: 'I am creating a new ArrayList copy before adding to the result list so state modification doesn't corrupt previous answers.'"
+      "Always highlight the 3 essential steps of backtracking: 1. Choose, 2. Recurse, 3. Unchoose (Backtrack).",
+      "Emphasize deep copying: 'I am creating a new ArrayList copy before adding to the result list so state modification during backtracking doesn't corrupt previous answers.'"
     ],
     keyTakeaways: {
       whenToUse: "Generate all permutations, combinations, subsets, Sudoku, N-Queens.",

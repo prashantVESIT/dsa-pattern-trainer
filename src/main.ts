@@ -30,25 +30,40 @@ const DSA_DATA: TopicData[] = [
   {
     id: 1,
     topic: "Arrays & Hashing",
-    problem: "Given an array of integers, return indices of the two numbers such that they add up to a specific target.",
-    explanation: "The optimal approach uses a Hash Map to store numbers we've already seen and their indices.",
+    problem: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+    explanation: "The optimal approach uses a HashMap<Integer, Integer> to store numbers we've already visited and their array indices.",
     complexity: { time: "O(n)", space: "O(n)" },
-    mistake: "Trying to use Nested Loops O(n²) or forgetting that the complement might be the current number itself.",
-    hint: "When you need to 'look back' for a value previously encountered while iterating.",
-    code: `public int[] twoSum(int[] nums, int target) {
-    Map<Integer, Integer> map = new HashMap<>();
-    for (int i = 0; i < nums.length; i++) {
-        int diff = target - nums[i];
-        if (map.containsKey(diff)) return new int[] { map.get(diff), i };
-        map.put(nums[i], i);
+    mistake: "Trying to use nested loops O(n²) or omitting explicit generic types in Java.",
+    hint: "When iterating through the array, compute complement = target - nums[i] and check if it exists in a Map<Integer, Integer>.",
+    code: `import java.util.HashMap;
+import java.util.Map;
+
+public class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        if (nums == null || nums.length < 2) {
+            return new int[0];
+        }
+
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+
+            if (map.containsKey(complement)) {
+                return new int[] { map.get(complement), i };
+            }
+
+            map.put(nums[i], i);
+        }
+
+        return new int[0];
     }
-    return null;
 }`,
     mcq: {
       question: "Why is a HashMap better than sorting for the Two Sum problem in this case?",
       options: [
         "Sorting takes O(n log n)",
-        "HashMaps work in O(1)",
+        "HashMaps work in O(1) average lookup",
         "Sorting loses index information",
         "All of the above"
       ],
@@ -59,18 +74,37 @@ const DSA_DATA: TopicData[] = [
     id: 2,
     topic: "Two Pointers",
     problem: "Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.",
-    explanation: "Maintain one pointer at the start and one at the end. Move them inward, skipping non-alphanumeric characters, and compare.",
+    explanation: "Maintain left pointer at start (0) and right pointer at end (n - 1). Move them inward while skipping non-alphanumeric characters.",
     complexity: { time: "O(n)", space: "O(1)" },
     mistake: "Allocating a new string or using recursion, which increases space complexity to O(n).",
-    hint: "Input is an array/string and you need to compare elements from both ends.",
-    code: `public boolean isPalindrome(String s) {
-    int i = 0, j = s.length() - 1;
-    while (i < j) {
-        while (i < j && !Character.isLetterOrDigit(s.charAt(i))) i++;
-        while (i < j && !Character.isLetterOrDigit(s.charAt(j))) j--;
-        if (Character.toLowerCase(s.charAt(i++)) != Character.toLowerCase(s.charAt(j--))) return false;
+    hint: "Compare characters from both ends moving inward using Character.isLetterOrDigit() and Character.toLowerCase().",
+    code: `public class Solution {
+    public boolean isPalindrome(String s) {
+        if (s == null) {
+            return false;
+        }
+
+        int left = 0;
+        int right = s.length() - 1;
+
+        while (left < right) {
+            while (left < right && !Character.isLetterOrDigit(s.charAt(left))) {
+                left++;
+            }
+            while (left < right && !Character.isLetterOrDigit(s.charAt(right))) {
+                right--;
+            }
+
+            if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))) {
+                return false;
+            }
+
+            left++;
+            right--;
+        }
+
+        return true;
     }
-    return true;
 }`,
     mcq: {
       question: "In what scenario is the Two Pointer approach typically optimized?",
@@ -86,27 +120,43 @@ const DSA_DATA: TopicData[] = [
   {
     id: 3,
     topic: "Sliding Window",
-    problem: "Find the maximum sum of any contiguous subarray of size k.",
-    explanation: "Instead of re-calculating the sum, 'slide' the window by adding the next element and subtracting the one no longer in range.",
-    complexity: { time: "O(n)", space: "O(1)" },
-    mistake: "Re-summing the window inside the loop, leading to O(n*k) complexity.",
-    hint: "Keywords: 'contiguous', 'subarray', 'substring', and a fixed or dynamic 'k'.",
-    code: `public int maxSubArray(int[] nums, int k) {
-    int maxSum = 0, currentSum = 0;
-    for (int i = 0; i < nums.length; i++) {
-        currentSum += nums[i];
-        if (i >= k - 1) {
-            maxSum = Math.max(maxSum, currentSum);
-            currentSum -= nums[i - (k - 1)];
+    problem: "Given a string s, find the length of the longest substring without repeating characters.",
+    explanation: "Maintain a sliding window defined by [left, right]. Use a Set<Character> to track unique characters in the window and shrink left whenever a duplicate is found.",
+    complexity: { time: "O(n)", space: "O(min(n, m))" },
+    mistake: "Shrinking the window using an if statement instead of a while loop when removing duplicate characters.",
+    hint: "Use a Set<Character> set = new HashSet<>(); to store unique characters in window [left, right] and shrink from left when duplicate is detected.",
+    code: `import java.util.HashSet;
+import java.util.Set;
+
+public class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
         }
+
+        Set<Character> set = new HashSet<>();
+
+        int left = 0;
+        int maxLength = 0;
+
+        for (int right = 0; right < s.length(); right++) {
+            while (set.contains(s.charAt(right))) {
+                set.remove(s.charAt(left++));
+            }
+
+            set.add(s.charAt(right));
+
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+
+        return maxLength;
     }
-    return maxSum;
 }`,
     mcq: {
       question: "What is the primary benefit of the Sliding Window technique?",
       options: [
         "Reduces space complexity",
-        "Eliminates redundant calculations",
+        "Eliminates redundant calculations by reusing window state",
         "Sorts the data first",
         "Works for non-contiguous elements"
       ],
@@ -116,21 +166,41 @@ const DSA_DATA: TopicData[] = [
   {
     id: 4,
     topic: "Prefix Sum",
-    problem: "Given an array, return an array such that each element at index i is the sum of all elements from 0 to i.",
-    explanation: "Calculate the running total and store it. This allows O(1) range sum queries using (prefix[j] - prefix[i-1]).",
+    problem: "Given an array of integers nums and an integer k, return the total number of contiguous subarrays whose sum equals to k.",
+    explanation: "Store running cumulative prefix sums in a Map<Integer, Integer> map. For each current sum, check if (currentSum - k) exists in the map.",
     complexity: { time: "O(n)", space: "O(n)" },
-    mistake: "Calculating range sums from scratch in a loop when multiple queries are expected.",
-    hint: "Problem requires multiple 'range queries' on a static array.",
-    code: `public int[] computePrefix(int[] nums) {
-    int[] prefix = new int[nums.length];
-    prefix[0] = nums[0];
-    for (int i = 1; i < nums.length; i++) {
-        prefix[i] = prefix[i-1] + nums[i];
+    mistake: "Forgetting to seed map.put(0, 1) or calculating range sums from scratch with nested loops.",
+    hint: "If currentSum - k has been seen previously in the prefix map, add its frequency to your answer.",
+    code: `import java.util.HashMap;
+import java.util.Map;
+
+public class Solution {
+    public int subarraySum(int[] nums, int k) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+
+        Map<Integer, Integer> prefixMap = new HashMap<>();
+        prefixMap.put(0, 1);
+
+        int currentSum = 0;
+        int resultCount = 0;
+
+        for (int num : nums) {
+            currentSum += num;
+
+            if (prefixMap.containsKey(currentSum - k)) {
+                resultCount += prefixMap.get(currentSum - k);
+            }
+
+            prefixMap.put(currentSum, prefixMap.getOrDefault(currentSum, 0) + 1);
+        }
+
+        return resultCount;
     }
-    return prefix;
 }`,
     mcq: {
-      question: "What is the time complexity to find a range sum sum(i, j) after building a Prefix Sum array?",
+      question: "What is the time complexity to find a range sum after building a Prefix Sum array or map?",
       options: [
         "O(n)",
         "O(log n)",
@@ -144,26 +214,48 @@ const DSA_DATA: TopicData[] = [
     id: 5,
     topic: "Backtracking",
     problem: "Generate all possible permutations of a given array of distinct integers.",
-    explanation: "Use a recursive helper to explore all paths. Swap elements to 'pick' one, recurse, and then swap back ('backtrack').",
+    explanation: "Use a recursive helper backtrack(nums, current, result) to explore all decision paths. Add elements to current, recurse, and undo choice (backtrack) by removing last element.",
     complexity: { time: "O(n!)", space: "O(n)" },
-    mistake: "Forgetting to undo the state change (backtrack step), resulting in corrupted paths.",
-    hint: "Problem asks to 'Generate all', 'Find all', or 'Try all combinations'.",
-    code: `private void backtrack(int[] nums, List<Integer> curr, List<List<Integer>> res) {
-    if (curr.size() == nums.length) {
-        res.add(new ArrayList<>(curr));
-        return;
+    mistake: "Adding current directly to result without making a deep copy (new ArrayList<>(current)), resulting in empty lists when backtracking finishes.",
+    hint: "Problem asks to 'Generate all', 'Find all', or 'Try all combinations' using 3 steps: Choose, Recurse, Unchoose.",
+    code: `import java.util.ArrayList;
+import java.util.List;
+
+public class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return result;
+        }
+
+        List<Integer> current = new ArrayList<>();
+        backtrack(nums, current, result);
+        return result;
     }
-    for (int n : nums) {
-        if (curr.contains(n)) continue;
-        curr.add(n);
-        backtrack(nums, curr, res);
-        curr.remove(curr.size() - 1);
+
+    private void backtrack(int[] nums, List<Integer> current, List<List<Integer>> result) {
+        if (current.size() == nums.length) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+
+        for (int num : nums) {
+            if (current.contains(num)) {
+                continue;
+            }
+
+            current.add(num);
+
+            backtrack(nums, current, result);
+
+            current.remove(current.size() - 1);
+        }
     }
 }`,
     mcq: {
-      question: "Why do we create a 'new ArrayList<>(curr)' before adding it to results?",
+      question: "Why do we create a 'new ArrayList<>(current)' before adding it to results?",
       options: [
-        "Java passes by reference",
+        "Java passes objects by reference; without a deep copy, subsequent removals corrupt all result entries",
         "To clear the list",
         "To sort the output",
         "For memory optimization"
@@ -507,6 +599,38 @@ function bindGlobalEvents() {
       }
     };
   });
+
+  // Mobile Left Window Drawer Handlers
+  const mobileToggleRoadmapBtn = document.getElementById('mobile-toggle-roadmap-btn');
+  const closeMobileRoadmapBtn = document.getElementById('close-mobile-roadmap-btn');
+  const mobileRoadmapDrawer = document.getElementById('mobile-roadmap-drawer');
+
+  if (mobileToggleRoadmapBtn) {
+    mobileToggleRoadmapBtn.onclick = () => {
+      audio.playClick();
+      if (mobileRoadmapDrawer) mobileRoadmapDrawer.classList.remove('hidden');
+    };
+  }
+
+  if (closeMobileRoadmapBtn) {
+    closeMobileRoadmapBtn.onclick = () => {
+      closeMobileRoadmapDrawer();
+    };
+  }
+
+  if (mobileRoadmapDrawer) {
+    mobileRoadmapDrawer.onclick = (e) => {
+      if (e.target === mobileRoadmapDrawer) {
+        closeMobileRoadmapDrawer();
+      }
+    };
+  }
+}
+
+function closeMobileRoadmapDrawer() {
+  audio.playClick();
+  const drawer = document.getElementById('mobile-roadmap-drawer');
+  if (drawer) drawer.classList.add('hidden');
 }
 
 function showLoginView() {
@@ -708,15 +832,18 @@ function calculateCurrentScore(): number {
 // --- Roadmap Navigation Bar ---
 function renderRoadmap() {
   const container = document.getElementById('roadmap-container');
-  if (!container) return;
-  container.innerHTML = '';
+  const mobileContainer = document.getElementById('mobile-roadmap-container');
 
-  DSA_DATA.forEach((item, index) => {
+  const buildTopicElement = (item: TopicData, index: number, isMobile = false) => {
     const isCompleted = index < state.currentChallengeIndex;
     const isCurrent = index === state.currentChallengeIndex;
     const div = document.createElement('div');
+
+    const canJump = index <= state.currentChallengeIndex || state.currentChallengeIndex >= DSA_DATA.length;
     
-    div.className = `flex items-center gap-4 px-4 py-3 rounded-2xl border transition-all duration-300 ${
+    div.className = `flex items-center gap-3.5 px-4 py-3 rounded-2xl border transition-all duration-300 ${
+      canJump ? 'cursor-pointer hover:border-primary hover:scale-[1.01]' : 'cursor-not-allowed opacity-60'
+    } ${
       isCurrent ? 'bg-surface-container-highest border-primary shadow-glow-primary active-pulse' :
       isCompleted ? 'bg-surface-container/50 border-secondary/30' : 'border-transparent opacity-70'
     }`;
@@ -730,18 +857,54 @@ function renderRoadmap() {
           <span class="material-symbols-outlined" style="font-size: 18px; ${isCompleted ? "font-variation-settings: 'FILL' 1;" : ''}">${icon}</span>
         </div>
       </div>
-      <div class="flex-1">
-        <p class="text-white text-xs font-black tracking-tight">${isCurrent ? 'Active Phase' : (isCompleted ? item.topic : 'Challenge 0' + item.id)}</p>
+      <div class="flex-1 min-w-0">
+        <p class="text-white text-xs font-black tracking-tight truncate">Challenge ${index + 1}</p>
         <p class="${isCurrent ? 'text-primary font-bold' : 'text-on-surface-variant'} text-[10px] uppercase tracking-widest">${isCompleted ? 'Completed' : (isCurrent ? 'Predicting...' : 'Locked')}</p>
       </div>
     `;
-    container.appendChild(div);
+
+    if (canJump) {
+      div.onclick = () => {
+        audio.playNav();
+        state.currentChallengeIndex = index;
+        renderRoadmap();
+        renderChallenge();
+        if (isMobile) {
+          closeMobileRoadmapDrawer();
+        }
+      };
+    }
+
+    return div;
+  };
+
+  if (container) {
+    container.innerHTML = '';
+    DSA_DATA.forEach((item, index) => {
+      container.appendChild(buildTopicElement(item, index, false));
+    });
+  }
+
+  if (mobileContainer) {
+    mobileContainer.innerHTML = '';
+    DSA_DATA.forEach((item, index) => {
+      mobileContainer.appendChild(buildTopicElement(item, index, true));
+    });
+  }
+
+  const currentStep = Math.min(state.currentChallengeIndex + 1, 5);
+  const progressPct = `${(Math.min(state.currentChallengeIndex, 5) / 5) * 100}%`;
+
+  document.querySelectorAll('.progress-text-val').forEach(el => {
+    (el as HTMLElement).innerText = `${currentStep}/5`;
   });
 
-  const progressText = document.getElementById('progress-text');
   const progressBar = document.getElementById('progress-bar');
-  if (progressText) progressText.innerText = `${Math.min(state.currentChallengeIndex + 1, 5)}/5`;
-  if (progressBar) progressBar.style.width = `${((state.currentChallengeIndex) / 5) * 100}%`;
+  if (progressBar) progressBar.style.width = progressPct;
+
+  document.querySelectorAll('.mobile-progress-bar-fill').forEach(el => {
+    (el as HTMLElement).style.width = progressPct;
+  });
 }
 
 // --- Challenge Rendering ---
@@ -995,6 +1158,11 @@ function addXP(amount: number) {
 }
 
 function updateXPDisplay() {
+  const xpValElems = document.querySelectorAll('.xp-counter-val');
+  xpValElems.forEach(el => {
+    (el as HTMLElement).innerText = `${state.xp}`;
+  });
+
   const xpCounter = document.getElementById('xp-counter');
   const xpWrapper = document.getElementById('xp-display-wrapper');
   if (xpCounter) xpCounter.innerText = `${state.xp}`;

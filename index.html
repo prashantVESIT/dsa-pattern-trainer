@@ -81,9 +81,9 @@
     <style>
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .transition-reveal { transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #1b2027; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #524535; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 203, 137, 0.25); border-radius: 10px; }
         
         .bg-mesh {
             background-color: #0f141a;
@@ -255,7 +255,11 @@
         </div>
 
         <!-- Search & User Actions -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 border border-primary/30 text-primary font-bold text-xs shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-primary" style="font-size: 16px;">stars</span>
+                <span class="xp-counter-val text-white font-black">0</span> XP
+            </div>
             <div class="relative hidden lg:flex items-center w-56">
                 <span class="material-symbols-outlined absolute left-2.5 text-outline" style="font-size: 16px;">search</span>
                 <input id="handbook-search" type="text" placeholder="Search keywords..." class="w-full bg-surface-container border border-outline-variant/60 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-on-surface-variant/60 focus:border-primary outline-none transition-all font-medium"/>
@@ -365,7 +369,11 @@
         </div>
 
         <!-- User Actions -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 border border-primary/30 text-primary font-bold text-xs shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-primary" style="font-size: 16px;">stars</span>
+                <span class="xp-counter-val text-white font-black">0</span> XP
+            </div>
             <button class="global-settings-trigger flex items-center justify-center rounded-xl size-9 bg-surface-container-high text-on-surface-variant hover:text-white border border-outline-variant hover:border-primary transition-all" title="Settings">
                 <span class="material-symbols-outlined" style="font-size: 18px;">settings</span>
             </button>
@@ -478,7 +486,11 @@
                 </button>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2.5">
+                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 border border-primary/30 text-primary font-bold text-xs shrink-0 shadow-sm">
+                    <span class="material-symbols-outlined text-primary" style="font-size: 16px;">stars</span>
+                    <span class="xp-counter-val text-white font-black">0</span> XP
+                </div>
                 <div class="hidden sm:flex flex-col text-right">
                     <span id="header-user-name" class="text-xs font-extrabold text-white">Prashant Singh</span>
                     <span id="header-user-email" class="text-[10px] text-on-surface-variant">prashantnsingh1@gmail.com</span>
@@ -495,8 +507,8 @@
             </div>
         </header>
 
-        <main class="flex flex-1 px-4 lg:px-20 py-10 gap-10">
-            <!-- Sidebar Navigation: ROADMAP -->
+        <main class="flex flex-col lg:flex-row flex-1 px-3 sm:px-6 lg:px-20 py-4 sm:py-8 lg:py-10 gap-6 lg:gap-10">
+            <!-- Sidebar Navigation: ROADMAP (DESKTOP) -->
             <aside class="hidden lg:flex w-72 flex-col gap-8 sticky top-24 h-[calc(100vh-120px)]">
                 <div class="flex flex-col">
                     <h1 class="text-white text-2xl font-bold leading-normal tracking-tight">Pattern Trainer</h1>
@@ -511,20 +523,40 @@
                 <div class="mt-auto p-5 bg-surface-variant rounded-2xl border border-outline-variant shadow-xl">
                     <div class="flex gap-4 justify-between mb-3">
                         <p class="text-white text-sm font-bold">Course Progress</p>
-                        <p id="progress-text" class="text-primary text-sm font-black">1/5</p>
+                        <p id="progress-text" class="progress-text-val text-primary text-sm font-black">1/5</p>
                     </div>
                     <div class="h-2.5 w-full bg-surface-container rounded-full overflow-hidden p-[1px]">
                         <div id="progress-bar" class="h-full bg-primary-container rounded-full transition-all duration-700 active-pulse" style="width: 20%;"></div>
                     </div>
                     <div id="xp-display-wrapper" class="flex items-center gap-2 mt-5 bg-surface-container-low p-3 rounded-xl border border-outline-variant/30 transition-all duration-300">
                         <span class="material-symbols-outlined text-primary drop-shadow-[0_0_5px_rgba(255,203,137,0.5)]" style="font-size: 20px;">stars</span>
-                        <p class="text-primary-fixed text-sm font-black tracking-tight">Total XP: <span id="xp-counter">0</span> XP</p>
+                        <p class="text-primary-fixed text-sm font-black tracking-tight">Total XP: <span id="xp-counter" class="xp-counter-val">0</span> XP</p>
                     </div>
                 </div>
             </aside>
 
             <!-- Main Content Area: CHALLENGE CARD -->
-            <div class="flex-1 flex flex-col gap-8 max-w-4xl mx-auto w-full">
+            <div class="flex-1 flex flex-col gap-6 lg:gap-8 max-w-4xl mx-auto w-full">
+                <!-- MOBILE & TABLET QUICK STATS & LEFT WINDOW TRIGGER BAR -->
+                <div class="flex lg:hidden items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-surface-variant border border-outline-variant shadow-lg gap-2">
+                    <!-- XP Counter Badge -->
+                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 border border-primary/30 text-primary font-bold text-xs sm:text-sm">
+                        <span class="material-symbols-outlined text-primary" style="font-size: 18px;">stars</span>
+                        <span>XP: <span class="xp-counter-val text-white font-black">0</span></span>
+                    </div>
+
+                    <!-- Course Progress Badge -->
+                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-container border border-outline-variant/60 text-xs text-on-surface-variant font-bold">
+                        <span>Progress:</span>
+                        <span class="progress-text-val text-primary font-black">1/5</span>
+                    </div>
+
+                    <!-- Left Window Roadmap Drawer Toggle -->
+                    <button id="mobile-toggle-roadmap-btn" type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/20 border border-primary/50 text-white font-bold text-xs hover:bg-primary/30 transition-all shadow-glow-primary active:scale-95">
+                        <span class="material-symbols-outlined text-primary" style="font-size: 18px;">view_sidebar</span>
+                        <span>Left Window</span>
+                    </button>
+                </div>
                 <!-- ACTIVE CHALLENGE VIEW -->
                 <div id="challenge-card" class="bg-surface-variant rounded-3xl border border-outline-variant overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-reveal border-t-primary/20">
                     <!-- Progress Header -->
@@ -796,6 +828,47 @@
                 <div class="h-16"></div>
             </div>
         </main>
+    </div>
+</div>
+
+<!-- MOBILE & TABLET LEFT WINDOW DRAWER / MODAL -->
+<div id="mobile-roadmap-drawer" class="fixed inset-0 z-[250] bg-black/80 backdrop-blur-md flex justify-start hidden transition-all duration-300">
+    <div class="w-full max-w-xs sm:max-w-sm h-full bg-surface-variant border-r border-outline-variant p-5 sm:p-6 flex flex-col gap-5 overflow-y-auto shadow-2xl">
+        <div class="flex items-center justify-between border-b border-outline-variant/60 pb-3.5">
+            <div class="flex items-center gap-2 text-white">
+                <span class="material-symbols-outlined text-primary" style="font-size: 24px;">view_sidebar</span>
+                <div>
+                    <h3 class="text-white text-base font-extrabold leading-tight">Pattern Trainer</h3>
+                    <p class="text-[10px] text-on-surface-variant font-bold">Left Window • Topic Roadmap</p>
+                </div>
+            </div>
+            <button id="close-mobile-roadmap-btn" type="button" class="size-8 rounded-xl bg-surface-container border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-white">
+                <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+            </button>
+        </div>
+
+        <!-- Course Progress & XP Card inside Mobile Left Window -->
+        <div class="p-4 bg-surface-container-low rounded-2xl border border-outline-variant/80">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-white">Course Progress</span>
+                <span class="progress-text-val text-primary text-xs font-black">1/5</span>
+            </div>
+            <div class="h-2 w-full bg-surface-container rounded-full overflow-hidden p-[1px] mb-3">
+                <div class="mobile-progress-bar-fill h-full bg-primary-container rounded-full transition-all duration-700 active-pulse" style="width: 20%;"></div>
+            </div>
+            <div class="flex items-center justify-between gap-2 bg-primary/10 border border-primary/30 p-2.5 rounded-xl text-xs font-bold text-primary">
+                <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-primary" style="font-size: 18px;">stars</span>
+                    <span>Total XP:</span>
+                </div>
+                <span class="xp-counter-val text-white font-black text-sm">0</span>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5 flex-1">
+            <span class="text-[10px] font-black uppercase text-on-surface-variant tracking-wider">Select Challenge</span>
+            <div id="mobile-roadmap-container" class="flex flex-col gap-2 mt-1"></div>
+        </div>
     </div>
 </div>
 
