@@ -23,7 +23,7 @@ An AI-powered interactive learning platform that helps students master <strong>D
 </p>
 
 🌐 **Live Demo:** https://dsa-pattern-trainer.ai.studio
-🌏 **Using GitHub:** https://prashantvesit.github.io/dsa-pattern-trainer/
+
 
 </div>
 
